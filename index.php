@@ -4,6 +4,7 @@ $groups = GroupLessonsTable::get_all_groups();
 $groupInfo = GroupLessonsAction::getGroupInfo();
 $allStudents = StudentsTable::get_students();
 StudentsActions::create_student();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,13 +53,25 @@ StudentsActions::create_student();
                 </thead>
                 <tbody>
                     <?php if ($groupInfo != null) : ?>
-                    <?php foreach ($groupInfo['students'] as $row) : ?>
+                    <?php foreach ($groupInfo['students'] as $student) : ?>
                     <tr>
-                        <th scrope='row'><?= $row['name']; ?></th>
-                        <?php foreach ($groupInfo['lessons'] as $lesson) : ?>
-                        <?php $scores = GroupLessonsTable::get_score_by_student_and_by_lesson($row['id'], $lesson['id']); ?>
-                        <td><?= isset($scores['score']) ? $scores['score'] : '' ?></td>
-                        <?php endforeach; ?>
+                        <th scrope='row'><?= $student['name']; ?></th>
+                        <?php $listScores = GroupLessonsTable::get_scores_by_student($student['id']); ?>
+                        <?php
+                                foreach ($groupInfo['lessons'] as $lesson) {
+                                    $td = "<td></td>";
+                                    foreach ($listScores as $listScore) {
+                                        if ($listScore['lesson_id'] == $lesson['id']) {
+                                            $td = "<td>" . $listScore['score'] . "</td>";
+                                            break;
+                                        } else {
+                                            $td = "<td></td>";
+                                            continue;
+                                        }
+                                    }
+                                    echo $td;
+                                }
+                                ?>
                     </tr>
                     <?php endforeach; ?>
                     <?php endif; ?>
@@ -127,7 +140,6 @@ StudentsActions::create_student();
     <!-- Пакет JavaScript с Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
     </script>
-    %!(EXTRA template.HTMLAttr=sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p)
 </body>
 
 </html>
