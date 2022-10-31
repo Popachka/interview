@@ -1,5 +1,8 @@
 @import url('../../node_modules/bootstrap-icons/font/bootstrap-icons.css');
 .wrapper{
-
     min-height: 100vh;
+}
+.nav .nav-link:hover{
+    color: #0d6efd!important;
+    transition: 0.2s;
 }
